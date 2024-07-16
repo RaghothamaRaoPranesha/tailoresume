@@ -1,9 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tailoresume</title>
+    <title>Resume Tailoring Application</title>
 </head>
 <body>
-Tailore your resume to pass ATS
+    <h1>Tailor Your Resume</h1>
+    <form id="resumeForm">
+        <label for="jobDescription">Job Description:</label><br>
+        <textarea id="jobDescription" name="jobDescription" rows="4" cols="50"></textarea><br>
+        <label for="resume">Upload Resume:</label><br>
+        <input type="file" id="resume" name="resume"><br><br>
+        <input type="submit" value="Tailor Resume">
+    </form>
+    <h2>Tailored Resume:</h2>
+    <pre id="tailoredResume"></pre>
+    <button id="downloadButton" style="display:none;">Download Resume</button>
+
+    <script>
+        document.getElementById('resumeForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const jobDescription = document.getElementById('jobDescription').value;
+            const resumeFile = document.getElementById('resume').files[0];
+
+            const formData = new FormData();
+            formData.append('job_description', jobDescription);
+            formData.append('resume', resumeFile);
+
+            const response = await fetch('YOUR_API_GATEWAY_ENDPOINT', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            const tailoredResume = result.tailored_resume;
+            document.getElementById('tailoredResume').innerText = tailoredResume;
+            document.getElementById('downloadButton').style.display = 'block';
+
+            document.getElementById('downloadButton').onclick = function() {
+                const blob = new Blob([tailoredResume], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tailored_resume.txt';
+                a.click();
+            };
+        };
+    </script>
 </body>
 </html>
