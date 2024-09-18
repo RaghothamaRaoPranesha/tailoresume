@@ -1,0 +1,118 @@
+// App.js
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const App = () => {
+  const [file, setFile] = useState(null);
+  const [geminiResponse, setGeminiResponse] = useState('');
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Assuming you have a function `uploadToGemini` to upload the file to your Gemini API
+    const response = await uploadToGemini(file); 
+
+    setGeminiResponse(response);
+  };
+
+  // Example upload function to Gemini
+  const uploadToGemini = async (file) => {
+    // Replace with your actual Gemini API endpoint
+    const apiEndpoint = 'https://your-gemini-api.com/process';
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(apiEndpoint, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      return null;
+    }
+  };
+
+  return (
+    <div>
+      <h1>File Upload with Gemini</h1>
+      <form onSubmit={handleSubmit}>
+        <input type="file" onChange={handleFileChange} />
+        <button type="submit">Upload</button>
+      </form>
+
+      {geminiResponse && (
+        <div>
+          <h2>Gemini Response:</h2>
+          <pre>{geminiResponse}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default App;
+Explanation:
+
+File Upload:
+
+The handleFileChange function updates the file state with the selected file.
+The handleSubmit function triggers the upload process to Gemini.
+Gemini Integration:
+
+The uploadToGemini function is a placeholder for your actual logic.
+You need to replace https://your-gemini-api.com/process with the correct URL of your Gemini API endpoint.
+The function should handle uploading the file to your API.
+You'll need to implement the necessary logic to send the file data to Gemini (e.g., using FormData, Axios, or Fetch API).
+Displaying Gemini Response:
+
+The geminiResponse state stores the response from Gemini.
+The component renders the response if it's available.
+Integration with Gemini:
+
+API Setup: You'll need to have a Gemini API endpoint set up to receive files and process them. This will likely involve a backend service that accepts file uploads and interacts with the Gemini API.
+Authentication: You'll need to implement authentication to your Gemini API if necessary.
+File Handling: Your Gemini API should handle the file upload and pass the file data to the Gemini service.
+Example (using hypothetical Gemini API):
+
+// Hypothetical Gemini API Endpoint
+const uploadToGemini = async (file) => {
+  const apiEndpoint = 'https://your-gemini-api.com/process';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await axios.post(apiEndpoint, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer YOUR_API_KEY', // Replace with your API key
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    return null;
+  }
+};
+Remember:
+
+Replace placeholders with your actual API endpoint, authentication information, and logic for processing Gemini's response.
+Consider error handling and user feedback for different scenarios (e.g., file upload failure, Gemini API errors).
+This is a basic example, and your actual implementation might require additional components, state management, and logic depending on your specific needs.
+
+<div className="file-upload">
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept=".pdf,.doc,.docx,.txt"
+            />
+          </div>
